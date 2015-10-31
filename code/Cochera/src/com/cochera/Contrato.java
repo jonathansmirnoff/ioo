@@ -85,4 +85,10 @@ public abstract class Contrato {
 	}
 	
 	public abstract float obtenerDeudas();
+
+	public void bajaContrato() {
+		setEstado(0);
+		//Libero la cochera!
+		getCochera().setEstado(0);
+	}
 }

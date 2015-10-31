@@ -80,6 +80,15 @@ public class MainCochera extends javax.swing.JFrame {
 		
 		JMenuItem bajaClienteMenuItem = new JMenuItem();
 		bajaClienteMenuItem.setText("Baja Cliente");
+		bajaClienteMenuItem.addActionListener(new ActionListener(
+				) {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BajaClienteView bajaClienteView = new BajaClienteView(sisCocheras);
+				bajaClienteView.setVisible(true);
+			}
+		});
 		
 		JMenuItem modificacionClienteMenuItem = new JMenuItem();
 		modificacionClienteMenuItem.setText("Modicacion Cliente");

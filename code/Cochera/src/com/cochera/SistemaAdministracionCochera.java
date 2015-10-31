@@ -38,6 +38,25 @@ public class SistemaAdministracionCochera {
 		}
 	}
 	
+	public void bajaCliente(String dni){
+		Cliente cliente = this.buscarCliente(dni);
+		if (cliente != null){
+			float deudas = 0;
+			Vector<Contrato> contratosDeCliente = buscarContratos(cliente);
+			for(int i=0; i < contratosDeCliente.size(); i++){
+				deudas += contratosDeCliente.get(i).obtenerDeudas();
+			}
+			
+			if (deudas == 0){
+				for(int i=0; i < contratosDeCliente.size(); i++){
+					contratosDeCliente.get(i).bajaContrato();
+				}
+				
+				cliente.setEstaActivo(false);
+			}				
+		}
+	}
+	
 	public void asignarAuto(String dniCliente, String patente, String marca, String modelo){
 		Cliente cliente = this.buscarCliente(dniCliente);
 		if(cliente != null){
@@ -252,6 +271,19 @@ public class SistemaAdministracionCochera {
 			}
 		}
 		return null;
+	}
+	
+	private Vector<Contrato> buscarContratos(Cliente cliente) {
+		Iterator<Contrato> it = this.getContratos().iterator();
+		Vector<Contrato> contratos = new Vector<Contrato>();
+		while(it.hasNext()){
+			Contrato contrato = it.next();
+			if (contrato.getCliente().getDni().equals(cliente.getDni())){
+				contratos.add(contrato);
+			}
+		}
+		
+		return contratos;
 	}
 
 	private MedioDePago buscarMedioDePago(String tipo, String entidad){
