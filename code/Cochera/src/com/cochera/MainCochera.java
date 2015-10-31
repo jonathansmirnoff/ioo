@@ -39,9 +39,7 @@ public class MainCochera extends javax.swing.JFrame {
 	private void initGUI() {		
 		try {
 			
-	        setTitle("Sistema Administracion Cochera");
-	        setSize(300, 200);
-	        setLocationRelativeTo(null);
+	        setTitle("Sistema Administracion Cochera");	        
 	        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			
 			//Creo la barra de menu!
@@ -49,14 +47,56 @@ public class MainCochera extends javax.swing.JFrame {
 			setJMenuBar(menuBar);
 			menuBar.setPreferredSize(new java.awt.Dimension(392, 22));
 			
-			menuBar.add(getMenuCochera());
-			menuBar.add(getMenuSalir());	
+			menuBar.add(getMenuClientes());
+			menuBar.add(getMenuCochera());			
+			menuBar.add(getMenuSalir());
 					
-			pack();		
+			pack();
+			setSize(400, 300);
+			setLocationRelativeTo(null);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private JMenu getMenuClientes(){
+		
+		//Creo un menu!
+		JMenu menuClientes = new JMenu();
+		menuClientes.setText("Clientes");
+		menuClientes.setPreferredSize(new java.awt.Dimension(65, 21));
+		
+		JMenuItem altaClienteMenuItem = new JMenuItem();
+		altaClienteMenuItem.setText("Alta Cliente");
+		altaClienteMenuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ClienteView altaClienteView = new ClienteView(sisCocheras, true);
+				altaClienteView.setVisible(true);
+			}
+		});
+		
+		JMenuItem bajaClienteMenuItem = new JMenuItem();
+		bajaClienteMenuItem.setText("Baja Cliente");
+		
+		JMenuItem modificacionClienteMenuItem = new JMenuItem();
+		modificacionClienteMenuItem.setText("Modicacion Cliente");
+		modificacionClienteMenuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ClienteView edicionClienteView = new ClienteView(sisCocheras, false);
+				edicionClienteView.setVisible(true);				
+			}
+		});
+		
+		menuClientes.add(altaClienteMenuItem);
+		menuClientes.add(bajaClienteMenuItem);
+		menuClientes.add(modificacionClienteMenuItem);
+		
+		return menuClientes;		
 	}
 	
 	private JMenu getMenuCochera(){
