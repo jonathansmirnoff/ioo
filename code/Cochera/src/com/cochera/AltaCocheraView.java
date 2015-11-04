@@ -63,6 +63,7 @@ public class AltaCocheraView extends javax.swing.JFrame {
 			
 			pack();
 			setSize(400, 300);
+			setLocationRelativeTo(null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

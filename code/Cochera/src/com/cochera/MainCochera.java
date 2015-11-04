@@ -101,9 +101,21 @@ public class MainCochera extends javax.swing.JFrame {
 			}
 		});
 		
+		JMenuItem asignarAutoMenuItem = new JMenuItem();
+		asignarAutoMenuItem.setText("Asignar Auto");
+		asignarAutoMenuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AsignarAutoView asignarAutoView = new AsignarAutoView(sisCocheras);
+				asignarAutoView.setVisible(true);
+			}
+		});
+		
 		menuClientes.add(altaClienteMenuItem);
 		menuClientes.add(bajaClienteMenuItem);
 		menuClientes.add(modificacionClienteMenuItem);
+		menuClientes.add(asignarAutoMenuItem);
 		
 		return menuClientes;		
 	}
