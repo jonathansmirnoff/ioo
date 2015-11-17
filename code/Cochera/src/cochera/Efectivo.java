@@ -6,10 +6,4 @@ public class Efectivo extends Contrato {
 		super(abono, cochera, auto, cliente);
 	}
 
-	@Override
-	public float obtenerDeudas() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

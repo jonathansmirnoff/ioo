@@ -139,6 +139,10 @@ public abstract class Contrato {
 		this.getCuenta().cobrar(monto, "Pago de Cuota");
 	}
 	
+	public float getSaldo(){
+		return this.getCuenta().getSaldo();
+	}
+	
 	private Date agregarDias(Date fecha, String periodo){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(fecha);
@@ -157,6 +161,4 @@ public abstract class Contrato {
 		
 		return cal.getTime();
 	}
-	
-	public abstract float obtenerDeudas();
 }

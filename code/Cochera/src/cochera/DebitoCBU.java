@@ -25,10 +25,4 @@ public class DebitoCBU extends Contrato {
 	public void setCbu(String cbu) {
 		this.cbu = cbu;
 	}
-
-	@Override
-	public float obtenerDeudas() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }

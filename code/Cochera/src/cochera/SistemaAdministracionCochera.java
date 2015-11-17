@@ -44,8 +44,12 @@ public class SistemaAdministracionCochera {
 			float deudas = 0;
 			Vector<Contrato> contratosDeCliente = buscarContratos(cliente);
 			for(int i=0; i < contratosDeCliente.size(); i++){
-				deudas += contratosDeCliente.get(i).obtenerDeudas();
+				if (contratosDeCliente.get(i).getSaldo() < 0){
+					deudas += contratosDeCliente.get(i).getSaldo();
+				}
 			}
+			
+			//TODO: Mostrar mensaje en caso de que el cliente tenga deudas.
 			
 			if (deudas == 0){
 				for(int i=0; i < contratosDeCliente.size(); i++){
@@ -53,7 +57,7 @@ public class SistemaAdministracionCochera {
 				}
 				
 				cliente.setEstaActivo(false);
-			}				
+			}			
 		}
 	}
 
@@ -250,7 +254,7 @@ public class SistemaAdministracionCochera {
 	public void bajaContrato(int idContrato) {
 		Contrato contrato = this.buscarContratoPorNumero(idContrato);
 
-		if (contrato != null && ((DebitoCBU) contrato).obtenerDeudas() == 0) {
+		if (contrato != null && ((DebitoCBU) contrato).getSaldo() == 0) {
 			((DebitoCBU) contrato).liberarCochera();
 			((DebitoCBU) contrato).setEstaActivo(false);
 		}
@@ -383,7 +387,7 @@ public class SistemaAdministracionCochera {
 	public void generarCuotas(){
 		Iterator<Contrato> itr = getContratos().iterator();
 		while(itr.hasNext()){
-			Contrato contrato = itr.next();
+			Contrato contrato = itr.next();						
 			if (contrato.getEstaActivo()){
 				if (contrato.seDebeGenerarCuota()){
 					contrato.generarCuota();
@@ -392,6 +396,22 @@ public class SistemaAdministracionCochera {
 		}
 	}
 	
+	public Vector<Contrato> obtenerContratosConDeuda(){
+		Vector<Contrato> contratosConDeuda = new Vector<Contrato>();
+		
+		Iterator<Contrato> itr = getContratos().iterator();
+		while(itr.hasNext()){
+			Contrato contrato = itr.next();						
+			if (contrato.getEstaActivo()){
+				if (contrato.getSaldo() < 0){
+					contratosConDeuda.add(contrato);
+				}
+			}
+		}
+		
+		return contratosConDeuda;
+	}
+		
 	public void cobrarContrato(int nroContrato, float monto){
 		Contrato con = this.buscarContratoPorNumero(nroContrato);
 		if (con != null) {

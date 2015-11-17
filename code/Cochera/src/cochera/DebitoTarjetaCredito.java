@@ -13,13 +13,6 @@ public class DebitoTarjetaCredito extends Contrato {
 		this.setNumero(numero);
 		this.setFechaVencimiento(fechaVencimiento);
 	}
-	
-
-	@Override
-	public float obtenerDeudas() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	public String getEntidad() {
 		return entidad;
