@@ -128,7 +128,7 @@ public abstract class Contrato {
 		Date fechaProximoVencimiento = this.agregarDias(this.getFechaUltimoMovimiento(), 
 				getAbono().getPeriodo());
 		
-		return fechaProximoVencimiento.after(Calendar.getInstance().getTime());				
+		return Calendar.getInstance().getTime().after(fechaProximoVencimiento);			
 	}
 	
 	public void generarCuota(){
@@ -149,13 +149,13 @@ public abstract class Contrato {
 		
 		switch (periodo) {
 			case "Quincenal":
-				cal.add(Calendar.DATE, 15);
+				cal.add(Calendar.DAY_OF_MONTH, 15);
 				break;
 			case "Mensual":	
-				cal.add(Calendar.DATE, 30);
+				cal.add(Calendar.DAY_OF_MONTH, 30);
 				break;
 			case "Semestral":
-				cal.add(Calendar.DATE, 60);
+				cal.add(Calendar.DAY_OF_MONTH, 60);
 				break;
 		}
 		

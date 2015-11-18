@@ -16,7 +16,9 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -28,7 +30,6 @@ public class AltaContratoView extends JDialog {
 	private JTextField textField_cli;
 	private JTextField textField_coch;
 	private JTextField textField_paten;
-	private JTextField textField_entidad;
 	private JTextField textCampo1;
 	private JTextField textFieldVencim;
 
@@ -59,17 +60,54 @@ public class AltaContratoView extends JDialog {
 		textField_paten.setColumns(10);
 
 		JComboBox comboBox_per = new JComboBox();
-		comboBox_per.setModel(new DefaultComboBoxModel(new String[] { "Quincenal", "Mensual", "Semestral", "Anual" }));
+		comboBox_per.setModel(new DefaultComboBoxModel());
+
+		Iterator<Abono> abon = sistema.getAbonos().iterator();//
+		Abono auxab;
+		int flagab;
+		Vector<Abono> Vauxab = new Vector<Abono>();
+		Iterator<Abono> itauxab;
+		while (abon.hasNext()) {
+			flagab = 0;
+			auxab = abon.next();
+			if (auxab.getEstado() == 1) {
+				itauxab = Vauxab.iterator();
+				while (itauxab.hasNext() && flagab == 0)
+					if (auxab.getPeriodo() == itauxab.next().getPeriodo())
+						flagab = 1;
+				if (flagab == 0) {
+					Vauxab.addElement(auxab);
+					comboBox_per.addItem(auxab.getPeriodo());
+				}
+			}
+		}
 
 		JLabel lblEntidad = new JLabel("Entidad:");
+		JComboBox comboBox_entidad = new JComboBox();
 
 		JLabel lblCampo1 = new JLabel("campo1");
 
-		textField_entidad = new JTextField();
-		textField_entidad.setColumns(10);
-
 		JComboBox comboBox_tam = new JComboBox();
-		comboBox_tam.setModel(new DefaultComboBoxModel(new String[] { "Peque\u00F1o", "Mediano", "Grande" }));
+
+		Iterator<Cochera> coch = sistema.getCocheras().iterator();//
+		Cochera auxco;
+		int flagco;
+		Vector<Cochera> Vauxco = new Vector<Cochera>();
+		Iterator<Cochera> itauxco;
+		while (coch.hasNext()) {
+			flagco = 0;
+			auxco = coch.next();
+			if (auxco.getEstaOcupada() != true) {
+				itauxco = Vauxco.iterator();
+				while (itauxco.hasNext() && flagco == 0)
+					if (auxco.getTamano() == itauxco.next().getTamano())
+						flagco = 1;
+				if (flagco == 0) {
+					Vauxco.addElement(auxco);
+					comboBox_tam.addItem(auxco.getTamano());
+				}
+			}
+		}
 
 		textCampo1 = new JTextField();
 		textCampo1.setColumns(10);
@@ -81,31 +119,108 @@ public class AltaContratoView extends JDialog {
 		lblVencimiento.setVisible(false);
 		textFieldVencim.setVisible(false);
 		lblEntidad.setVisible(false);
-		textField_entidad.setVisible(false);
+
+		Iterator<MedioDePago> mdp = sistema.getMediosDePago().iterator();
+		MedioDePago aux;
+		int flag;
+		Vector<MedioDePago> Vaux = new Vector<MedioDePago>();
+		Iterator<MedioDePago> itaux;
+		while (mdp.hasNext()) {
+			flag = 0;
+			aux = mdp.next();
+			itaux = Vaux.iterator();
+			if (aux.getEstado() == 1) {
+				while (itaux.hasNext() && flag == 0) {
+					MedioDePago aux2 = itaux.next();
+					if (aux.getTipo() == aux2.getTipo())
+						flag = 1;
+				}
+				if (flag == 0) {
+					comboBox_tipo.addItem(aux.getTipo());
+					Vaux.addElement(aux);
+				}
+			}
+
+		}
 
 		comboBox_tipo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (comboBox_tipo.getSelectedItem().toString().compareTo("Efectivo") == 0
 						|| comboBox_tipo.getSelectedItem().toString().compareTo("Cheque") == 0) {
 					lblEntidad.setVisible(false);
-					textField_entidad.setVisible(false);
+					comboBox_entidad.setVisible(false);
 					lblCampo1.setVisible(false);
 					textCampo1.setVisible(false);
 					lblVencimiento.setVisible(false);
 					textFieldVencim.setVisible(false);
 				} else {
 					lblEntidad.setVisible(true);
-					textField_entidad.setVisible(true);
+					comboBox_entidad.setVisible(true);
 					lblCampo1.setVisible(true);
 					textCampo1.setVisible(true);
 					lblVencimiento.setVisible(false);
 					textFieldVencim.setVisible(false);
 					if (comboBox_tipo.getSelectedItem().toString().compareTo("Debito CBU") == 0) {
 						lblCampo1.setText("cbu:");
+
+						comboBox_entidad.removeAllItems();
+						Iterator<MedioDePago> mdp = sistema.getMediosDePago().iterator();
+						MedioDePago aux;
+						int flag;
+						Vector<MedioDePago> Vaux = new Vector<MedioDePago>();
+						Iterator<MedioDePago> itaux;
+						while (mdp.hasNext()) {
+							flag = 0;
+							aux = mdp.next();
+							if (aux.getEstado() == 1) {
+								if (aux.getTipo().compareTo("Debito CBU") == 0) {
+									itaux = Vaux.iterator();
+									while (itaux.hasNext() && flag == 0) {
+										MedioDePago aux2 = itaux.next();
+										if (aux.getEntidad() == aux2.getEntidad())
+											flag = 1;
+									}
+									if (flag == 0) {
+										comboBox_entidad.addItem(aux.getEntidad());
+										Vaux.addElement(aux);
+									}
+								}
+							}
+
+						}
+
 					} else {
 						lblCampo1.setText("Numero:");
 						lblVencimiento.setVisible(true);
 						textFieldVencim.setVisible(true);
+
+						Iterator<MedioDePago> mdp = sistema.getMediosDePago().iterator();
+						MedioDePago aux;
+						int flag;
+						Vector<MedioDePago> Vaux = new Vector<MedioDePago>();
+						Iterator<MedioDePago> itaux;
+						comboBox_entidad.removeAllItems();
+						while (mdp.hasNext()) {
+							flag = 0;
+							aux = mdp.next();
+							if (aux.getEstado() == 1) {
+								if (aux.getTipo().compareTo("Tarjeta de credito") == 0) {
+									itaux = Vaux.iterator();
+									while (itaux.hasNext() && flag == 0) {
+										MedioDePago aux2 = itaux.next();
+										if (aux.getEntidad() == aux2.getEntidad())
+											flag = 1;
+									}
+									if (flag == 0) {
+										if (aux.getEstado() == 1) {
+											comboBox_entidad.addItem(aux.getEntidad());
+											Vaux.addElement(aux);
+										}
+									}
+								}
+							}
+
+						}
 
 					}
 
@@ -113,8 +228,6 @@ public class AltaContratoView extends JDialog {
 
 			}
 		});
-		comboBox_tipo.setModel(
-				new DefaultComboBoxModel(new String[] { "Efectivo", "Cheque", "Tarjeta de credito", "Debito CBU" }));
 
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -123,11 +236,11 @@ public class AltaContratoView extends JDialog {
 								.addComponent(lblclie).addComponent(lblTam).addComponent(lblCoche)
 								.addComponent(lblPeriodo).addComponent(lblPatente).addComponent(lblEntidad)
 								.addComponent(lblVencimiento).addComponent(lblCampo1))
-						.addPreferredGap(ComponentPlacement.RELATED, 32,
-								Short.MAX_VALUE)
+						.addPreferredGap(ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
 						.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(comboBox_entidad, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(comboBox_tam, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(textFieldVencim).addComponent(textCampo1).addComponent(textField_entidad)
+								.addComponent(textFieldVencim).addComponent(textCampo1)
 								.addComponent(comboBox_per, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(textField_paten).addComponent(textField_cli).addComponent(textField_coch)
 								.addComponent(comboBox_tipo, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -159,7 +272,7 @@ public class AltaContratoView extends JDialog {
 						GroupLayout.PREFERRED_SIZE))
 				.addGap(18)
 				.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE).addComponent(lblEntidad).addComponent(
-						textField_entidad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						comboBox_entidad, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 						GroupLayout.PREFERRED_SIZE))
 				.addGap(18)
 				.addGroup(gl_contentPanel.createParallelGroup(Alignment.BASELINE)
@@ -172,6 +285,7 @@ public class AltaContratoView extends JDialog {
 								GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(57, Short.MAX_VALUE)));
 		contentPanel.setLayout(gl_contentPanel);
+
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -202,7 +316,8 @@ public class AltaContratoView extends JDialog {
 								sistema.altaContratoDebitoTarjetaCredito(textField_cli.getText(),
 										textField_coch.getText(), comboBox_tam.getSelectedItem().toString(),
 										comboBox_per.getSelectedItem().toString(), textField_paten.getText(),
-										textField_entidad.getText(), textCampo1.getText(), df.parse(fecha));
+										comboBox_entidad.getSelectedItem().toString(), textCampo1.getText(),
+										df.parse(fecha));
 							} catch (Exception a) {
 								a.printStackTrace();
 							}
@@ -213,7 +328,7 @@ public class AltaContratoView extends JDialog {
 							sistema.altaContratoDebitoCBU(textField_cli.getText(), textField_coch.getText(),
 									comboBox_tam.getSelectedItem().toString(),
 									comboBox_per.getSelectedItem().toString(), textField_paten.getText(),
-									textField_entidad.getText(), textCampo1.getText());
+									comboBox_entidad.getSelectedItem().toString(), textCampo1.getText());
 						}
 						Contrato_menu clmenu = new Contrato_menu(sistema);
 						dispose();

@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.Vector;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -95,13 +97,44 @@ public class BajaAbonoView extends JDialog {
 			}
 		}
 
-		comboBox.addItem("Pequeño");
-		comboBox.addItem("Mediano");
-		comboBox.addItem("Grande");
+		Iterator<Abono> abon = sistema.getAbonos().iterator();
+		Abono aux;
+		int flag_tam, flag_per;
+		Vector<Abono> Vaux = new Vector<Abono>();
+		Vector<Abono> Vaux2 = new Vector<Abono>();
+		Iterator<Abono> itaux;
+		while (abon.hasNext()) {
+			flag_tam = 0;
+			flag_per = 0;
+			aux = abon.next();
+			if (aux.getEstado() == 1) {
+				Vaux.addElement(aux);
+				itaux = Vaux2.iterator();
+				while (itaux.hasNext() && (flag_tam == 0 || flag_per == 0)) {
+					Abono aux2 = itaux.next();
+					if (aux.getTamano() == aux2.getTamano() && aux.getPeriodo() == aux2.getPeriodo()) {
+						flag_tam = 1;
+						flag_per = 1;
+					}
+					if (aux.getTamano() == aux2.getTamano() && aux.getPeriodo() != aux2.getPeriodo())
+						flag_tam = 1;
+					if (aux.getTamano() != aux2.getTamano() && aux.getPeriodo() == aux2.getPeriodo())
+						flag_per = 1;
+				}
+				if (flag_tam != 1 || flag_per != 1) {
+					Vaux2.addElement(aux);
 
-		comboBox_1.addItem("Quincenal");
-		comboBox_1.addItem("Mensual");
-		comboBox_1.addItem("Semestral");
-		comboBox_1.addItem("Anual");
+					if (flag_tam == 0 && flag_per == 0) {
+						comboBox.addItem(aux.getTamano());
+						comboBox_1.addItem(aux.getPeriodo());
+					}
+					if (flag_tam == 1 && flag_per == 0)
+						comboBox_1.addItem(aux.getPeriodo());
+					if (flag_tam == 0 && flag_per == 1)
+						comboBox.addItem(aux.getTamano());
+				}
+			}
+		}
+
 	}
 }

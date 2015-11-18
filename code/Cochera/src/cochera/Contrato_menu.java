@@ -23,7 +23,7 @@ public class Contrato_menu extends JDialog {
 	public Contrato_menu(SistemaAdministracionCochera sist) {
 		sistema = sist;
 		setVisible(true);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 352);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -57,6 +57,22 @@ public class Contrato_menu extends JDialog {
 				dispose();
 			}
 		});
+
+		JButton cobrarContr = new JButton("Cobrar contrato");
+		cobrarContr.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CobrarContratoView cbv = new CobrarContratoView(sistema);
+				dispose();
+			}
+		});
+
+		JButton btnMostrarDeudas = new JButton("Mostrar deudas");
+		btnMostrarDeudas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DeudasView mdv = new DeudasView(sistema);
+				dispose();
+			}
+		});
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup().addGroup(gl_contentPanel
@@ -69,16 +85,22 @@ public class Contrato_menu extends JDialog {
 								.addComponent(btnBajaDeContrato, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
 										Short.MAX_VALUE)
 								.addComponent(btnAltaDeContrato, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
-										Short.MAX_VALUE).addComponent(btnBuscarContrato, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(btnBuscarContrato, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE)
+								.addComponent(btnMostrarDeudas, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+										Short.MAX_VALUE).addComponent(cobrarContr, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-						.addContainerGap(142, Short.MAX_VALUE)));
+						.addContainerGap(150, Short.MAX_VALUE)));
 		gl_contentPanel.setVerticalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPanel.createSequentialGroup().addContainerGap().addComponent(lblContratos)
 						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(btnAltaDeContrato)
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnBajaDeContrato)
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnModificarContrato)
 						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnBuscarContrato)
-						.addContainerGap(39, Short.MAX_VALUE)));
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnMostrarDeudas)
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(cobrarContr)
+						.addContainerGap(27, Short.MAX_VALUE)));
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();

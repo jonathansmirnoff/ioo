@@ -87,7 +87,7 @@ public class AltaPagoView extends JDialog {
 				if (comboBox.getSelectedItem().toString().compareTo("Debito CBU") == 0) {
 					lblCampo.setText("Entidad emisora:");
 					lblCampo.setVisible(true);
-					lblCampo_1.setText("Numero:");
+					lblCampo_1.setText("CBU:");
 					lblCampo_1.setVisible(true);
 					lblCampo_2.setText("Fecha de vencimiento:");
 					lblCampo_2.setVisible(true);
@@ -98,10 +98,13 @@ public class AltaPagoView extends JDialog {
 				if (comboBox.getSelectedItem().toString().compareTo("Tarjeta de credito") == 0) {
 					lblCampo.setText("Entidad bancaria:");
 					lblCampo.setVisible(true);
-					lblCampo_1.setText("CBU:");
+					lblCampo_1.setText("Numero:");
 					lblCampo_1.setVisible(true);
+					lblCampo_2.setText("Fecha de vencimiento:");
+					lblCampo_2.setVisible(true);
 					textField.setVisible(true);
 					textField_1.setVisible(true);
+					textField_2.setVisible(true);
 				}
 
 			}
@@ -117,7 +120,7 @@ public class AltaPagoView extends JDialog {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MedioPago_menu mpmen = new MedioPago_menu(sistema);				
+				MedioPago_menu mpmen = new MedioPago_menu(sistema);
 				dispose();
 			}
 		});

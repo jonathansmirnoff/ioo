@@ -17,13 +17,14 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 
 public class BajaPagoView extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private SistemaAdministracionCochera sistema;
-	private JTextField textField;
 
 	public BajaPagoView(SistemaAdministracionCochera sist) {
 		sistema = sist;
@@ -41,49 +42,96 @@ public class BajaPagoView extends JDialog {
 		JLabel lblCampo = new JLabel("campo");
 		lblCampo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCampo.setVisible(false);
-
-		textField = new JTextField();
-		textField.setHorizontalAlignment(SwingConstants.CENTER);
-		textField.setColumns(10);
-		textField.setVisible(false);
-
+		JComboBox comboBox_1 = new JComboBox();
 		JComboBox comboBox = new JComboBox();
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (comboBox.getSelectedItem().toString().compareTo("Debito CBU") != 0
 						&& comboBox.getSelectedItem().toString().compareTo("Tarjeta de credito") != 0) {
 					lblCampo.setVisible(false);
-					textField.setVisible(false);
+					comboBox_1.setVisible(false);
 				}
 
 				if (comboBox.getSelectedItem().toString().compareTo("Debito CBU") == 0) {
 					lblCampo.setText("Entidad emisora:");
 					lblCampo.setVisible(true);
-					textField.setVisible(true);
+					comboBox_1.setVisible(true);
+					comboBox_1.removeAllItems();
+
+					Iterator<MedioDePago> mdp = sistema.getMediosDePago().iterator();
+					MedioDePago aux;
+					int flag;
+					Vector<MedioDePago> Vaux = new Vector<MedioDePago>();
+					Iterator<MedioDePago> itaux;
+					comboBox_1.removeAllItems();
+					while (mdp.hasNext()) {
+						flag = 0;
+						aux = mdp.next();
+						if (aux.getEstado() == 1) {
+							if (aux.getTipo().compareTo("Debito CBU") == 0) {
+								itaux = Vaux.iterator();
+								while (itaux.hasNext() && flag == 0) {
+									MedioDePago aux2 = itaux.next();
+									if (aux.getEntidad() == aux2.getEntidad())
+										flag = 1;
+								}
+								if (flag == 0) {
+									comboBox_1.addItem(aux.getEntidad());
+									Vaux.addElement(aux);
+								}
+							}
+						}
+
+					}
 
 				}
 				if (comboBox.getSelectedItem().toString().compareTo("Tarjeta de credito") == 0) {
 					lblCampo.setText("Entidad bancaria:");
 					lblCampo.setVisible(true);
-					textField.setVisible(true);
+					comboBox_1.setVisible(true);
+
+					Iterator<MedioDePago> mdp = sistema.getMediosDePago().iterator();
+					MedioDePago aux;
+					int flag;
+					Vector<MedioDePago> Vaux = new Vector<MedioDePago>();
+					Iterator<MedioDePago> itaux;
+					comboBox_1.removeAllItems();
+					while (mdp.hasNext()) {
+						flag = 0;
+						aux = mdp.next();
+						if (aux.getEstado() == 1) {
+							if (aux.getTipo().compareTo("Tarjeta de credito") == 0) {
+								itaux = Vaux.iterator();
+								while (itaux.hasNext() && flag == 0) {
+									MedioDePago aux2 = itaux.next();
+									if (aux.getEntidad() == aux2.getEntidad())
+										flag = 1;
+								}
+								if (flag == 0) {
+									if (aux.getEstado() == 1) {
+										comboBox_1.addItem(aux.getEntidad());
+										Vaux.addElement(aux);
+									}
+								}
+							}
+						}
+					}
 
 				}
 			}
 		});
-		comboBox.setModel(
-				new DefaultComboBoxModel(new String[] { "Efectivo", "Cheque", "Tarjeta de credito", "Debito CBU" }));
 
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
-		gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+		gl_contentPanel.setHorizontalGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPanel.createSequentialGroup().addGap(118).addComponent(lblBajaDeMedio)
-						.addContainerGap(113, Short.MAX_VALUE))
-				.addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup()
-						.addContainerGap(98, Short.MAX_VALUE)
+						.addContainerGap(121, Short.MAX_VALUE))
+				.addGroup(gl_contentPanel.createSequentialGroup().addContainerGap(98, Short.MAX_VALUE)
 						.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addComponent(lblTipo)
 								.addComponent(lblCampo))
 						.addGap(74)
-						.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false).addComponent(textField)
-								.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(comboBox_1, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(comboBox, 0, 142, Short.MAX_VALUE))
 						.addGap(70)));
 		gl_contentPanel.setVerticalGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPanel
 				.createSequentialGroup().addContainerGap().addComponent(lblBajaDeMedio).addGap(29)
@@ -91,7 +139,7 @@ public class BajaPagoView extends JDialog {
 						comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addGap(18)
 				.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING).addComponent(lblCampo).addComponent(
-						textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addContainerGap(82, Short.MAX_VALUE)));
 		contentPanel.setLayout(gl_contentPanel);
 		{
@@ -102,7 +150,12 @@ public class BajaPagoView extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						sistema.bajaMedioDePago(comboBox.getSelectedItem().toString(), textField.getText());
+
+						if (comboBox_1.isVisible() == true)
+							sistema.bajaMedioDePago(comboBox.getSelectedItem().toString(),
+									comboBox_1.getSelectedItem().toString());
+						else
+							sistema.bajaMedioDePago(comboBox.getSelectedItem().toString(), "");
 						MedioPago_menu mpmen = new MedioPago_menu(sistema);
 						dispose();
 					}
@@ -123,5 +176,29 @@ public class BajaPagoView extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+
+		Iterator<MedioDePago> mdp = sistema.getMediosDePago().iterator();
+		MedioDePago aux;
+		int flag;
+		Vector<MedioDePago> Vaux = new Vector<MedioDePago>();
+		Iterator<MedioDePago> itaux;
+		while (mdp.hasNext()) {
+			flag = 0;
+			aux = mdp.next();
+			if (aux.getEstado() == 1) {
+				itaux = Vaux.iterator();
+				while (itaux.hasNext() && flag == 0) {
+					MedioDePago aux2 = itaux.next();
+					if (aux.getTipo() == aux2.getTipo())
+						flag = 1;
+				}
+				if (flag == 0) {
+					comboBox.addItem(aux.getTipo());
+					Vaux.addElement(aux);
+				}
+
+			}
+		}
+
 	}
 }
